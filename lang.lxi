@@ -1,0 +1,27 @@
+id [a-zA-Z][a-zA-Z0-9]*
+int_const 0|[+-]?[1-9][0-9]*
+char_const '[a-zA-Z0-9+*/%<=> ,:()_.?!-]?'
+string_const \"[a-zA-Z0-9+*/%<=> ,:()_.?!-]*\"
+
+%%
+{char_const} printf("const\n");
+{string_const} printf("const\n");
+{int_const} printf("const\n");
+let|integer|character|string|read|write|if|then|else|and|or|not|is|isnot|begin|end|for|while|do printf("%s\n", yytext);
+"="|"+="|"-="|"*="|"/="|"%="|"++"|"--"|"+"|"-"|"*"|"/"|"%"|"<"|"<="|">"|">=" printf("%s\n", yytext); 
+":"|","|";"|"("|")"|"["|"]" printf("%s\n", yytext);
+{id} printf("id\n");
+[ \t\n]+
+%%
+main( argc, argv)
+int argc;
+char **argv;
+{
+	++argv, --argc; /* skip over program name */
+	if ( argc > 0 )
+		yyin = fopen( argv[0], "r" );
+	else
+		yyin = stdin;
+	yylex();
+}
+
